@@ -148,7 +148,10 @@ int main(int argc, char *argv[]) {
         printf("The final solution is: \n");
         PrintAry(finalVec, size);
     }
-
+    fp = fopen("out.bin", "wb");
+    if(fp != NULL){
+        fwrite(finalVec, sizeof(float), size, fp);
+    }
     free(m);
     free(a);
     free(b);

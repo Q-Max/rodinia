@@ -217,11 +217,14 @@ cl_context cl_init(char devicePreference) {
     cl_errChk(status, "Creating context", true);
 
     // Create the command queue
-    commandQueueProf = clCreateCommandQueue(context, device,
-                                            CL_QUEUE_PROFILING_ENABLE, &status);
+
+    cl_queue_properties Profprops[] = { CL_QUEUE_PROFILING_ENABLE , 0 };
+    cl_queue_properties props[] = { 0, 0 };
+    commandQueueProf = clCreateCommandQueueWithProperties(context, device,
+                                            Profprops, &status);
     cl_errChk(status, "creating command queue", true);
 
-    commandQueueNoProf = clCreateCommandQueue(context, device, 0, &status);
+    commandQueueNoProf = clCreateCommandQueueWithProperties(context, device, props, &status);
     cl_errChk(status, "creating command queue", true);
 
     if (eventsEnabled) {
@@ -376,18 +379,20 @@ cl_context cl_init_context(int platform, int dev, int quiet) {
     if (cl_errChk(status, "creating Context", true)) {
         exit(1);
     }
+    cl_queue_properties Profprops[] = { CL_QUEUE_PROFILING_ENABLE , 0 };
+    cl_queue_properties props[] = { 0 , 0 };
 
 #define PROFILING
 
 #ifdef PROFILING
 
-    commandQueue = clCreateCommandQueue(context, devices[device_touse],
-                                        CL_QUEUE_PROFILING_ENABLE, &status);
+    commandQueue = clCreateCommandQueueWithProperties(context, devices[device_touse],
+                                        Profprops, &status);
 
 #else
 
-    clCommandQueue = clCreateCommandQueue(clGPUContext, devices[device_touse],
-                                          NULL, &status);
+    clCommandQueue = clCreateCommandQueueWithProperities(clGPUContext, devices[device_touse],
+                                          props, &status);
 
 #endif // PROFILING
 
